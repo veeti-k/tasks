@@ -1,4 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
+import { createId as createCuid } from "@paralleldrive/cuid2";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
@@ -7,7 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export { createId };
+export function createId() {
+	return createCuid();
+}
 
 export function returnMsg(msg: string | null, type: "error" | "success") {
 	return {
