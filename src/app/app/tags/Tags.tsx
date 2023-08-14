@@ -24,6 +24,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { AnimatePresence } from "framer-motion";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createTag, deleteTag, editTag } from "./tagActions";
 
@@ -135,21 +136,39 @@ export function CreateTag() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	const dialog = useDialog(!!searchParams.get("create-tag"));
+	const createTagParam = searchParams.get("create-tag");
+	const nameParam = searchParams.get("name");
 
-	const searchParamName = searchParams.get("name");
+	const [isOpen, setIsOpen] = useState(false);
+
+	useEffect(() => {
+		if (createTagParam !== null) {
+			setIsOpen(true);
+		}
+	}, []);
 
 	const createTagAction = useAction(createTag, {
 		onSuccess: () => {
 			toast.success("tag created");
-			router.push("/app/tags");
-			dialog.close();
+			if (createTagParam) {
+				router.replace("/app/tags");
+			}
+			setIsOpen(false);
 		},
 		onError: (res) => errorToast("failed to create tag", res?.msg),
 	});
 
 	return (
-		<Dialog {...dialog.props}>
+		<Dialog
+			open={isOpen}
+			onOpenChange={() => {
+				if (createTagParam) {
+					router.replace("/app/tags");
+				}
+
+				setIsOpen(false);
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button>create tag</Button>
 			</DialogTrigger>
@@ -162,11 +181,7 @@ export function CreateTag() {
 				<form action={createTagAction.trigger} className="flex flex-col gap-4">
 					<label className="flex flex-col gap-1">
 						<span className="text-sm">name</span>
-						<Input
-							name="name"
-							autoComplete="off"
-							defaultValue={searchParamName ?? ""}
-						/>
+						<Input name="name" autoComplete="off" defaultValue={nameParam ?? ""} />
 					</label>
 
 					<label className="flex flex-col gap-1">
