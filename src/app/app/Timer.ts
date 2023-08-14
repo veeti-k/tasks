@@ -14,8 +14,7 @@ export function useActiveTask() {
 }
 
 export function useTimerLoop() {
-	const [selectedTag, setSelectedTag] = useSelectedTag();
-	const [activeTask, setActiveTask] = useActiveTask();
+	const [activeTask] = useActiveTask();
 
 	function updateTime() {}
 

@@ -19,7 +19,7 @@ export default async function Page() {
 	});
 
 	return (
-		<div className="min-h-main flex h-full w-full flex-col items-center justify-center p-6">
+		<div className="flex h-full min-h-main w-full flex-col items-center justify-center p-6">
 			<h2 className="rounded-lg border p-4 font-medium tabular-nums leading-none">
 				<Time />
 			</h2>
