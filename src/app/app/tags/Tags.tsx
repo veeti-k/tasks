@@ -145,6 +145,7 @@ export function CreateTag() {
 		if (createTagParam !== null) {
 			setIsOpen(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const createTagAction = useAction(createTag, {
