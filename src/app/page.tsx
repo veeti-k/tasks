@@ -1,1 +1,1 @@
-export default async function Page() {}
+export default function RootPage() {}
