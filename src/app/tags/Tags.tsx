@@ -8,6 +8,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { WithInitialAnimation } from "@/components/withIntialAnimation";
 import { Tag } from "@/lib/db/schema";
@@ -16,7 +22,8 @@ import { useDialog } from "@/lib/useDialog";
 import { errorToast } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { AnimatePresence } from "framer-motion";
-import { createTag, deleteTag } from "./tagActions";
+import { MoreHorizontal } from "lucide-react";
+import { createTag, deleteTag, editTag } from "./tagActions";
 
 export function Tags(props: { tags: Tag[] }) {
 	return (
@@ -30,24 +37,88 @@ export function Tags(props: { tags: Tag[] }) {
 	);
 }
 
-function Tag(props: { tag: Tag }) {
-	const deleteTagAction = useAction(deleteTag, {
-		toasts: false,
-	});
+function Tag(props: { tag: Tag; isPreview?: boolean }) {
+	const SurroundingElement = props.isPreview === true ? "div" : WithInitialAnimation;
 
 	return (
-		<WithInitialAnimation>
-			<div className="flex justify-between items-center border rounded-lg p-3 gap-2 mt-2">
-				<span>{props.tag.name}</span>
+		<SurroundingElement className="mt-2 flex items-center justify-between gap-2 rounded-lg border p-3">
+			<div className="flex items-center gap-3">
+				<div
+					className="h-4 w-4 rounded-full"
+					style={{ backgroundColor: props.tag.color }}
+				/>
 
-				<Button
-					disabled={deleteTagAction.isLoading}
-					onClick={() => deleteTagAction.trigger(props.tag.id)}
-				>
-					{deleteTagAction.isLoading ? "deleting..." : "delete"}
-				</Button>
+				<span>{props.tag.name}</span>
 			</div>
-		</WithInitialAnimation>
+
+			{props.isPreview !== true && <TagActions tag={props.tag} />}
+		</SurroundingElement>
+	);
+}
+
+function TagActions(props: { tag: Tag }) {
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant="outline" size="icon" className="h-8 w-8 p-0">
+					<MoreHorizontal className="h-4 w-4" />
+				</Button>
+			</DropdownMenuTrigger>
+
+			<DropdownMenuContent>
+				<EditTag tag={props.tag} />
+				<DeleteTag tag={props.tag} />
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
+function DeleteTag(props: { tag: Tag }) {
+	const dialog = useDialog();
+
+	const deleteTagAction = useAction(deleteTag);
+
+	return (
+		<Dialog {...dialog.props}>
+			<DialogTrigger asChild>
+				<DropdownMenuItem
+					onSelect={(e) => {
+						e.preventDefault();
+						dialog.open();
+					}}
+				>
+					delete tag
+				</DropdownMenuItem>
+			</DialogTrigger>
+
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>delete tag</DialogTitle>
+				</DialogHeader>
+
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-1">
+						<p>are you sure you want to delete this tag?</p>
+
+						<Tag tag={props.tag} isPreview />
+					</div>
+
+					<div className="flex justify-end gap-4">
+						<DialogClose asChild>
+							<Button variant="ghost">cancel</Button>
+						</DialogClose>
+
+						<Button
+							type="submit"
+							variant="destructive"
+							disabled={deleteTagAction.isLoading}
+						>
+							{deleteTagAction.isLoading ? "deleting..." : "delete"}
+						</Button>
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
@@ -69,27 +140,83 @@ export function CreateTag() {
 
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>create a tag</DialogTitle>
+					<DialogTitle>create tag</DialogTitle>
 				</DialogHeader>
 
-				<form action={createTagAction.trigger} className="flex flex-col gap-3">
-					<label className="flex flex-col gap-1 ">
+				<form action={createTagAction.trigger} className="flex flex-col gap-4">
+					<label className="flex flex-col gap-1">
 						<span className="text-sm">name</span>
 						<Input name="name" autoComplete="off" />
 					</label>
 
-					<label className="flex flex-col gap-1 ">
+					<label className="flex flex-col gap-1">
 						<span className="text-sm">color</span>
 						<Input name="color" autoComplete="off" />
 					</label>
 
-					<div className="flex justify-end gap-3">
+					<div className="flex justify-end gap-4">
 						<DialogClose asChild>
 							<Button variant="ghost">cancel</Button>
 						</DialogClose>
 
 						<Button type="submit" disabled={createTagAction.isLoading}>
 							{createTagAction.isLoading ? "creating..." : "create"}
+						</Button>
+					</div>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+export function EditTag(props: { tag: Tag }) {
+	const dialog = useDialog();
+
+	const editTagAction = useAction(editTag, {
+		onSuccess: () => {
+			dialog.close();
+		},
+		onError: (res) => errorToast("failed to edit tag", res?.msg),
+	});
+
+	return (
+		<Dialog {...dialog.props}>
+			<DialogTrigger asChild>
+				<DropdownMenuItem
+					onSelect={(e) => {
+						e.preventDefault();
+						dialog.open();
+					}}
+				>
+					edit tag
+				</DropdownMenuItem>
+			</DialogTrigger>
+
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>create tag</DialogTitle>
+				</DialogHeader>
+
+				<form action={editTagAction.trigger} className="flex flex-col gap-4">
+					<input type="hidden" name="tagId" value={props.tag.id} />
+
+					<label className="flex flex-col gap-1">
+						<span className="text-sm">name</span>
+						<Input name="name" defaultValue={props.tag.name} autoComplete="off" />
+					</label>
+
+					<label className="flex flex-col gap-1">
+						<span className="text-sm">color</span>
+						<Input name="color" defaultValue={props.tag.color} autoComplete="off" />
+					</label>
+
+					<div className="flex justify-end gap-4">
+						<DialogClose asChild>
+							<Button variant="ghost">cancel</Button>
+						</DialogClose>
+
+						<Button type="submit" disabled={editTagAction.isLoading}>
+							{editTagAction.isLoading ? "saving..." : "save"}
 						</Button>
 					</div>
 				</form>

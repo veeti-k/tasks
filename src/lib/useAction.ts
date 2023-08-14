@@ -5,8 +5,7 @@ import { type returnMsg } from "./utils";
 
 export function useAction<TActionProps>(
 	action: (actionProps: TActionProps) => Promise<ReturnType<typeof returnMsg> | undefined>,
-
-	opts: {
+	opts?: {
 		onSuccess?: (res: ReturnType<typeof returnMsg>) => void;
 		onError?: (res: ReturnType<typeof returnMsg> | undefined) => void;
 	}
@@ -19,9 +18,9 @@ export function useAction<TActionProps>(
 				const res = await action(actionProps);
 
 				if (res?.type === "success") {
-					opts.onSuccess?.(res);
+					opts?.onSuccess?.(res);
 				} else {
-					opts.onError?.(res);
+					opts?.onError?.(res);
 				}
 			});
 		},
