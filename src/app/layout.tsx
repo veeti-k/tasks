@@ -1,22 +1,15 @@
 import { Inter } from "next/font/google";
 import { type ReactNode } from "react";
-import { Providers } from "./@auth/Providers/Providers";
-import { getUser } from "./@unAuth/action";
+import { Providers } from "./app/Providers/Providers";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default async function RootLayout(props: {
-	children: ReactNode;
-	auth: ReactNode;
-	unAuth: ReactNode;
-}) {
-	const userId = await getUser();
-
+export default async function RootLayout(props: { children: ReactNode }) {
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<Providers>{userId ? props.auth : props.unAuth}</Providers>
+				<Providers>{props.children}</Providers>
 			</body>
 		</html>
 	);

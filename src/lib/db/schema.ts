@@ -1,5 +1,5 @@
 import { relations, type InferModel } from "drizzle-orm";
-import { datetime, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import { boolean, datetime, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
 	id: varchar("id", { length: 26 }).primaryKey(),
@@ -37,9 +37,9 @@ export const tagsRelations = relations(tags, ({ one, many }) => ({
 
 export const tasks = mysqlTable("tasks", {
 	id: varchar("id", { length: 26 }).primaryKey(),
-	isManual: varchar("is_manual", { length: 1 }).notNull(),
+	isManual: boolean("is_manual").notNull(),
 	start: datetime("start").notNull(),
-	end: datetime("end").notNull(),
+	end: datetime("end"),
 	expiry: datetime("expiry").notNull(),
 	createdAt: datetime("created_at").notNull(),
 
@@ -48,6 +48,7 @@ export const tasks = mysqlTable("tasks", {
 });
 
 export type Task = InferModel<typeof tasks, "select">;
+export type InsertTask = InferModel<typeof tasks, "insert">;
 
 export const tasksRelations = relations(tasks, ({ one }) => ({
 	user: one(users, {

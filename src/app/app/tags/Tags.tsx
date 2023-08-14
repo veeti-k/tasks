@@ -23,6 +23,8 @@ import { errorToast } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { AnimatePresence } from "framer-motion";
 import { MoreHorizontal } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { createTag, deleteTag, editTag } from "./tagActions";
 
 export function Tags(props: { tags: Tag[] }) {
@@ -76,7 +78,13 @@ function TagActions(props: { tag: Tag }) {
 function DeleteTag(props: { tag: Tag }) {
 	const dialog = useDialog();
 
-	const deleteTagAction = useAction(deleteTag);
+	const deleteTagAction = useAction(deleteTag, {
+		onSuccess: () => {
+			toast.success("tag deleted");
+			dialog.close();
+		},
+		onError: (res) => errorToast("failed to delete tag", res?.msg),
+	});
 
 	return (
 		<Dialog {...dialog.props}>
@@ -111,6 +119,7 @@ function DeleteTag(props: { tag: Tag }) {
 						<Button
 							type="submit"
 							variant="destructive"
+							onClick={() => deleteTagAction.trigger(props.tag.id)}
 							disabled={deleteTagAction.isLoading}
 						>
 							{deleteTagAction.isLoading ? "deleting..." : "delete"}
@@ -123,10 +132,17 @@ function DeleteTag(props: { tag: Tag }) {
 }
 
 export function CreateTag() {
-	const dialog = useDialog();
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const dialog = useDialog(!!searchParams.get("create-tag"));
+
+	const searchParamName = searchParams.get("name");
 
 	const createTagAction = useAction(createTag, {
 		onSuccess: () => {
+			toast.success("tag created");
+			router.push("/app/tags");
 			dialog.close();
 		},
 		onError: (res) => errorToast("failed to create tag", res?.msg),
@@ -146,7 +162,11 @@ export function CreateTag() {
 				<form action={createTagAction.trigger} className="flex flex-col gap-4">
 					<label className="flex flex-col gap-1">
 						<span className="text-sm">name</span>
-						<Input name="name" autoComplete="off" />
+						<Input
+							name="name"
+							autoComplete="off"
+							defaultValue={searchParamName ?? ""}
+						/>
 					</label>
 
 					<label className="flex flex-col gap-1">

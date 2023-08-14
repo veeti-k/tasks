@@ -18,12 +18,12 @@ export function returnMsg(msg: string | null, type: "error" | "success") {
 	};
 }
 
-export function returnErr(msg: string | null) {
-	return returnMsg(msg, "error");
+export function returnErr(msg?: string) {
+	return returnMsg(msg ?? null, "error");
 }
 
-export function returnSuccess(msg: string | null) {
-	return returnMsg(msg, "success");
+export function returnSuccess(msg?: string) {
+	return returnMsg(msg ?? null, "success");
 }
 
 export function errorToast(msg: string, errorMsg?: string | null) {

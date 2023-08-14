@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
 	theme: {
@@ -48,6 +49,15 @@ module.exports = {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
+			},
+			height: {
+				main: "29rem",
+			},
+			minHeight: {
+				main: "29rem",
+			},
+			maxHeight: {
+				main: "29rem",
 			},
 			keyframes: {
 				"accordion-down": {

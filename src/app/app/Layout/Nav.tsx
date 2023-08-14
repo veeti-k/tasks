@@ -7,10 +7,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-	{ id: "home", label: "home", href: "/" },
-	{ id: "stats", label: "stats", href: "/stats" },
-	{ id: "tags", label: "tags", href: "/tags" },
-	{ id: "tasks", label: "tasks", href: "/tasks" },
+	{ id: "home", label: "home", href: "/app" },
+	{ id: "stats", label: "stats", href: "/app/stats" },
+	{ id: "tags", label: "tags", href: "/app/tags" },
+	{ id: "tasks", label: "tasks", href: "/app/tasks" },
 ];
 
 export function Nav() {

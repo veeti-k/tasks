@@ -1,13 +1,13 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { Toaster } from "sonner";
 import { ThemeProvider } from "./ThemeProvider";
+import { ToastProvider } from "./ToastProvider";
 
 export function Providers(props: { children: ReactNode }) {
 	return (
 		<ThemeProvider>
-			<Toaster richColors position="top-center" />
+			<ToastProvider />
 
 			{props.children}
 		</ThemeProvider>

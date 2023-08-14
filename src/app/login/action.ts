@@ -2,7 +2,7 @@
 
 import { serverConf } from "@/lib/config";
 import { db } from "@/lib/db/db";
-import { users } from "@/lib/db/schema";
+import { users, type User } from "@/lib/db/schema";
 import { createId, returnErr } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import * as jose from "jose";
@@ -72,10 +72,18 @@ async function googleAuth(code: string) {
 	return userInfo.email;
 }
 
-export async function getUser() {
+export async function getUserId<T extends boolean>(
+	required: T = true as T
+): Promise<T extends true ? string : string | null> {
 	const jwt = cookies().get("token");
 
-	if (!jwt || !jwt.value) return null;
+	if (!jwt || !jwt.value) {
+		if (required) {
+			throw new Error("failed to get user id - no jwt");
+		}
+
+		return null as T extends true ? string : string | null;
+	}
 
 	const jwtPayload = await jose.jwtVerify(
 		jwt.value,
@@ -86,7 +94,24 @@ export async function getUser() {
 		}
 	);
 
-	if (!jwtPayload.payload.userId) return null;
+	const userId = jwtPayload.payload.userId;
 
-	return jwtPayload.payload.userId;
+	if (!userId || typeof userId !== "string")
+		return null as T extends true ? string : string | null;
+
+	return userId;
+}
+
+export async function getUser<T extends boolean>(
+	required: T = true as T
+): Promise<T extends true ? User : User | null> {
+	const userId = await getUserId(required);
+
+	if (!userId) return null as T extends true ? User : User | null;
+
+	const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+
+	if (!user) return null as T extends true ? User : User | null;
+
+	return user;
 }
