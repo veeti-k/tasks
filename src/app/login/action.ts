@@ -73,7 +73,7 @@ async function googleAuth(code: string) {
 }
 
 export async function getUserId<T extends boolean>(
-	required: T = true as T
+	required: T = false as T
 ): Promise<T extends true ? string : string | null> {
 	const jwt = cookies().get("token");
 
@@ -103,7 +103,7 @@ export async function getUserId<T extends boolean>(
 }
 
 export async function getUser<T extends boolean>(
-	required: T = true as T
+	required: T = false as T
 ): Promise<T extends true ? User : User | null> {
 	const userId = await getUserId(required);
 
