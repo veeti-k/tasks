@@ -24,20 +24,37 @@ export async function createTask(newTask: Output<typeof createTaskSchema>) {
 		return returnErr("invalid data");
 	}
 
-	const tag = await db.query.tags.findFirst({
-		where: and(eq(tags.id, newTask.tagId), eq(tags.userId, userId)),
-	});
+	try {
+		// const tag = await db.query.tags.findFirst({
+		// 	where: and(eq(tags.id, newTask.tagId), eq(tags.userId, userId)),
+		// });
 
-	if (!tag) {
-		return returnErr("invalid tag");
+		const tag = await db
+			.select()
+			.from(tags)
+			.where(and(eq(tags.id, newTask.tagId), eq(tags.userId, userId)));
+
+		if (!tag) {
+			return returnErr("invalid tag");
+		}
+	} catch (err) {
+		console.error("failed to check if tag exists in db -", err);
+
+		return returnErr("unexpected error");
 	}
 
-	await db.insert(tasks).values({
-		...newTask,
-		id: createId(),
-		createdAt: new Date(),
-		userId,
-	});
+	try {
+		await db.insert(tasks).values({
+			...newTask,
+			id: createId(),
+			createdAt: new Date(),
+			userId,
+		});
+	} catch (err) {
+		console.error("failed to insert task to db -", err);
+
+		return returnErr("unexpected error");
+	}
 
 	return returnSuccess();
 }

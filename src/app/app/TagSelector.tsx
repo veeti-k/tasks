@@ -15,22 +15,20 @@ import { type Tag } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelectedTag } from "./Timer/timerState";
 
 export function TagSelector(props: { tags: Tag[] }) {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState("");
 	const [search, setSearch] = useState("");
+	const [selectedTag, setSelectedTag] = useSelectedTag();
 
 	const router = useRouter();
 
-	const tags = props.tags.map((tag) => ({ label: tag.name, value: tag.id, color: tag.color }));
-
-	const filtered = tags.filter(
-		(tag) => tag.label.toLowerCase().indexOf(search.toLowerCase()) !== -1
+	const filtered = props.tags.filter(
+		(tag) => tag.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
 	);
 
 	const showCreate = search.length && !filtered.length;
-	const selectedTag = tags.find((tag) => tag.value === value);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +45,7 @@ export function TagSelector(props: { tags: Tag[] }) {
 								className="h-3.5 w-3.5 rounded-full"
 								style={{ backgroundColor: selectedTag.color }}
 							/>
-							<span>{selectedTag.label}</span>
+							<span>{selectedTag.name}</span>
 						</div>
 					) : (
 						"select tag"
@@ -70,19 +68,25 @@ export function TagSelector(props: { tags: Tag[] }) {
 						no tag found
 					</CommandEmpty>
 					<CommandGroup>
-						{(search.length ? filtered : tags).map((tag) => (
+						{(search.length ? filtered : props.tags).map((tag) => (
 							<CommandItem
-								key={tag.value}
-								value={tag.value}
+								key={tag.id}
+								value={tag.id}
 								onSelect={(currentValue) => {
-									setValue(currentValue);
-									setOpen(false);
+									const newTag = props.tags.find(
+										(tag) => tag.id === currentValue
+									);
+
+									if (newTag) {
+										setSelectedTag(newTag);
+										setOpen(false);
+									}
 								}}
 							>
 								<Check
 									className={cn(
 										"mr-2 h-4 w-4",
-										value === tag.value ? "opacity-100" : "opacity-0"
+										tag.id === selectedTag?.id ? "opacity-100" : "opacity-0"
 									)}
 								/>
 								<div className="flex items-center gap-3">
@@ -90,7 +94,7 @@ export function TagSelector(props: { tags: Tag[] }) {
 										className="h-3.5 w-3.5 rounded-full"
 										style={{ backgroundColor: tag.color }}
 									/>
-									<span>{tag.label}</span>
+									<span>{tag.name}</span>
 								</div>
 							</CommandItem>
 						))}

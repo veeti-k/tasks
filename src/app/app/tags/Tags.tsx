@@ -162,12 +162,13 @@ export function CreateTag() {
 	return (
 		<Dialog
 			open={isOpen}
-			onOpenChange={() => {
-				if (createTagParam) {
+			onOpenChange={(newOpen) => {
+				if (createTagParam && !newOpen) {
 					router.replace("/app/tags");
+					return;
 				}
 
-				setIsOpen(false);
+				setIsOpen(newOpen);
 			}}
 		>
 			<DialogTrigger asChild>
