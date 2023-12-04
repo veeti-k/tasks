@@ -2,7 +2,9 @@
 import { AnimatePresence, type MotionValue, motion, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
-const fontSize = 88;
+import classes from "./counter.module.scss";
+
+const fontSize = 66;
 const height = fontSize + 28;
 
 function getParts(seconds: number) {
@@ -25,22 +27,18 @@ export function Counter(props: { seconds: number }) {
 
 	return (
 		<>
-			<span aria-live="assertive" className="sr-only">
+			<span className="sr-only" aria-live="assertive">
 				duration:
 				<time dateTime={`PT${parts.srHours}H${parts.srMinutes}M${parts.srSeconds}S`}>
 					{parts.srHours}:{parts.srMinutes}:{parts.srSeconds}
 				</time>
 			</span>
 
-			<div
-				aria-hidden
-				style={{ fontSize, lineHeight: "6.7rem" }}
-				className="flex overflow-hidden mx-4"
-			>
+			<div aria-hidden style={{ fontSize, lineHeight: "8rem" }} className={classes.counter}>
 				<AnimatePresence>
 					{parts.minutes >= 100 && (
 						<motion.div
-							className="overflow-hidden"
+							className={classes.digitWrapper}
 							initial={{ opacity: 0, width: 0 }}
 							animate={{ opacity: 1, width: "auto" }}
 							exit={{ opacity: 0, width: 0 }}
@@ -69,7 +67,7 @@ export function Digit(props: { place: number; value: number }) {
 	}, [animatedValue, valueRoundedToPlace]);
 
 	return (
-		<div style={{ height }} className="relative w-[1ch] tabular-nums">
+		<div style={{ height }} className={classes.digit}>
 			{Array(10)
 				.fill(0)
 				.map((_, i) => (
@@ -94,7 +92,7 @@ function Number(props: { mv: MotionValue; number: number }) {
 	});
 
 	return (
-		<motion.span style={{ y }} className="absolute inset-0 flex items-center justify-center">
+		<motion.span style={{ y }} className={classes.number}>
 			{props.number}
 		</motion.span>
 	);

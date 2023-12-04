@@ -5,7 +5,9 @@ import { Toaster } from "sonner";
 
 import { Entrypoint } from "./Entrypoint";
 import { ApiProvider } from "./api";
-import "./main.css";
+import "./styles/fonts.scss";
+import "./styles/misc.scss";
+import "./styles/reset.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>

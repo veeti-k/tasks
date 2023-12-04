@@ -1,0 +1,36 @@
+/* Spacing */
+$space-1: 0.4rem;
+$space-2: 0.8rem;
+$space-3: 1.2rem;
+$space-4: 1.6rem;
+$space-5: 2rem;
+$space-6: 2.4rem;
+$space-7: 2.8rem;
+$space-8: 3.2rem;
+$space-9: 3.6rem;
+$space-10: 4rem;
+
+/* Font sizes */
+$font-size-1: 1.2rem;
+$font-size-2: 1.4rem;
+$font-size-3: 1.6rem;
+$font-size-4: 1.8rem;
+$font-size-5: 2rem;
+
+/* Colors */
+$color-page-background: oklch(0% 0 0);
+$color-text: oklch(0% 0 100%);
+$color-border: oklch(26.86% 0 0);
+$color-ring: oklch(86.97% 0 0);
+
+$color-card: oklch(20.44% 0 0);
+$color-card-text: $color-text;
+$color-card-item: oklch(16.98% 0 0);
+
+$color-popover: $color-card-item;
+
+$color-button-default: oklch(30% 0 0);
+$color-button-default-active: oklch(30% 0 20%);
+
+$color-button-destructive: oklch(52.68% 0.1667 25.72);
+$color-button-destructive-active: oklch(52.68% 0.1667 45.72);

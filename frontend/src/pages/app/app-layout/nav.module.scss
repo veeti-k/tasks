@@ -1,0 +1,36 @@
+@import "@/styles/variables";
+
+.nav {
+	display: flex;
+	width: 100%;
+	max-width: max-content;
+	border-radius: 9999px;
+	border-width: 0.1rem;
+	background-color: $color-card;
+	padding: $space-2;
+	gap: $space-1;
+}
+
+.navItem {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	border-radius: 9999px;
+	padding: $space-2 $space-4;
+	z-index: 1;
+}
+
+.navItemText {
+	position: relative;
+}
+
+.activeIndicator {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	border-radius: 9999px;
+	background-color: $color-button-default;
+	border-width: 0.1rem;
+}

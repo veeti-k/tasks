@@ -1,0 +1,15 @@
+@import "../../../styles/variables.scss";
+
+.main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.counterWrapper {
+	border-radius: 2.4rem;
+	border-width: 0.1rem;
+	background-color: $color-card-item;
+	font-weight: 600;
+}

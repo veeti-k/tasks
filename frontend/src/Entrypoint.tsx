@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
+import classes from "./entrypoint.module.scss";
 import { AuthenticatedApp } from "./pages/authenticated-app";
 import { UnauthenticatedApp } from "./pages/unauthenticated-app";
 import { useAuth } from "./utils/api/auth";
@@ -20,7 +21,7 @@ export function Entrypoint() {
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
 					transition={{ duration: 0.7, ease: "easeInOut" }}
-					className="flex h-full w-full items-center justify-center"
+					className={classes.wrapper}
 				>
 					<AuthenticatedApp />
 				</motion.div>
@@ -31,7 +32,7 @@ export function Entrypoint() {
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0, transition: { duration: 0.5 } }}
 					transition={{ duration: 0.7, ease: "easeInOut" }}
-					className="flex h-full w-full items-center justify-center"
+					className={classes.wrapper}
 				>
 					<UnauthenticatedApp />
 				</motion.div>

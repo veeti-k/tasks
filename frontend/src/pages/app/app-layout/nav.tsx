@@ -9,11 +9,13 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import classes from "./nav.module.scss";
+
 export function Nav() {
 	const location = useLocation();
 
 	return (
-		<nav className="flex w-full max-w-max rounded-full border bg-card p-2 gap-1 text-sm">
+		<nav className={classes.nav}>
 			<NavLink to="/app" indicator={location.pathname === "/app" && <ActiveIndicator />}>
 				home
 			</NavLink>
@@ -39,7 +41,7 @@ function ActiveIndicator() {
 		<motion.div
 			aria-hidden
 			layoutId="active-indicator"
-			className="absolute inset-0 w-full rounded-full bg-primary border border-gray-600"
+			className={classes.activeIndicator}
 			transition={{
 				duration: 0.1,
 				type: "spring",
@@ -59,12 +61,9 @@ function NavLink({
 	children: ReactNode;
 }) {
 	return (
-		<Link
-			to={to}
-			className="relative flex w-full items-center justify-center rounded-full py-2 px-4 outline-none outline-2 outline-offset-2 transition-[outline,opacity] duration-200 focus-visible:outline-gray-300"
-		>
+		<Link to={to} className={classes.navItem}>
 			{indicator}
-			<span className="relative">{children}</span>
+			<span className={classes.navItemText}>{children}</span>
 		</Link>
 	);
 }
